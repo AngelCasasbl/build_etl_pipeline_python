@@ -1,0 +1,117 @@
+[
+    {
+        "label": "create_engine",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "pandas",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas",
+        "description": "pandas",
+        "detail": "pandas",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "pymysql",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pymysql",
+        "description": "pymysql",
+        "detail": "pymysql",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "test_connection",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def test_connection(engine):\n    try:\n        with engine.connect() as connection:\n            print(connection)\n            print(\"Conexión exitosa a MySQL\")\n    except Exception as e:\n        print(f\"Error al conectar a la base de datos: {e}\")\ntest_connection(mysql_engine)\ndef extract_mysql():\n    try: ",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "extract_mysql",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def extract_mysql():\n    try: \n        with mysql_engine.connect() as connection:\n            query = \"\"\"SELECT table_name \n                    FROM information_schema.tables \n                    where table_name IN ('product', 'productsubcategory', 'productcategory', 'salesterritory', 'productdescription');\"\"\"\n            src_tables = pd.read_sql(query, connection)\n            for table_name in src_tables[\"TABLE_NAME\"]:\n                print(f\"Extrayendo datos de: {table_name}\")\n                df = pd.read_sql(f\"SELECT * FROM adventureworks.{table_name};\", connection)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "load_in_postgres",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def load_in_postgres(df,tbl):\n    try:\n        rows_imported = 0\n        pg_engine = create_engine(f\"postgresql://{uid}:{pwd}@{pghost}:{pgport}/{pgdb}\")\n        test_connection(pg_engine)\n        print(f'importing rows {rows_imported} to {rows_imported + len(df)}... for table {tbl}')\n        # save df to postgres\n        df.to_sql(f'stg_{tbl}', pg_engine, if_exists='replace', index=False, chunksize=100000)\n        rows_imported += len(df)\n        print(\"Data imported successful\")",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "pgport",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "pgport = os.getenv('PGPORT')\npghost = os.getenv('PGHOST')\npgdb   = os.getenv('PGDB')\nmysql_pwd  = os.getenv(\"MyPASS\")\nmysql_uid  = os.getenv(\"MyUSER\")\nmysql_port = os.getenv('MyPORT')\nmysql_host = os.getenv('MyHOST')\nmysql_db   = os.getenv('MyDB')\n# create connection to mysql database\nmysql_engine = create_engine(f\"mysql+pymysql://{mysql_uid}:{mysql_pwd}@{mysql_host}:{mysql_port}/{mysql_db}\")",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "pghost",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "pghost = os.getenv('PGHOST')\npgdb   = os.getenv('PGDB')\nmysql_pwd  = os.getenv(\"MyPASS\")\nmysql_uid  = os.getenv(\"MyUSER\")\nmysql_port = os.getenv('MyPORT')\nmysql_host = os.getenv('MyHOST')\nmysql_db   = os.getenv('MyDB')\n# create connection to mysql database\nmysql_engine = create_engine(f\"mysql+pymysql://{mysql_uid}:{mysql_pwd}@{mysql_host}:{mysql_port}/{mysql_db}\")\n# Probar la conexión",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "mysql_port",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "mysql_port = os.getenv('MyPORT')\nmysql_host = os.getenv('MyHOST')\nmysql_db   = os.getenv('MyDB')\n# create connection to mysql database\nmysql_engine = create_engine(f\"mysql+pymysql://{mysql_uid}:{mysql_pwd}@{mysql_host}:{mysql_port}/{mysql_db}\")\n# Probar la conexión\ndef test_connection(engine):\n    try:\n        with engine.connect() as connection:\n            print(connection)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "mysql_host",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "mysql_host = os.getenv('MyHOST')\nmysql_db   = os.getenv('MyDB')\n# create connection to mysql database\nmysql_engine = create_engine(f\"mysql+pymysql://{mysql_uid}:{mysql_pwd}@{mysql_host}:{mysql_port}/{mysql_db}\")\n# Probar la conexión\ndef test_connection(engine):\n    try:\n        with engine.connect() as connection:\n            print(connection)\n            print(\"Conexión exitosa a MySQL\")",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "mysql_engine",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "mysql_engine = create_engine(f\"mysql+pymysql://{mysql_uid}:{mysql_pwd}@{mysql_host}:{mysql_port}/{mysql_db}\")\n# Probar la conexión\ndef test_connection(engine):\n    try:\n        with engine.connect() as connection:\n            print(connection)\n            print(\"Conexión exitosa a MySQL\")\n    except Exception as e:\n        print(f\"Error al conectar a la base de datos: {e}\")\ntest_connection(mysql_engine)",
+        "detail": "main",
+        "documentation": {}
+    }
+]
