@@ -21,37 +21,37 @@ mysql_host = os.getenv('MyHOST')
 mysql_db   = os.getenv('MyDB')
 
 # create connection to mysql database
-
 mysql_engine = create_engine(f"mysql+pymysql://{mysql_uid}:{mysql_pwd}@{mysql_host}:{mysql_port}/{mysql_db}")
-# Probar la conexión
 
+# funcion para probar la conexión
 def test_connection(engine):
     try:
         with engine.connect() as connection:
-            print(connection)
-            print("Conexión exitosa a MySQL")
+            print(f"Conexión exitosa a {connection}")
     except Exception as e:
         print(f"Error al conectar a la base de datos: {e}")
 
-test_connection(mysql_engine)
 
+# funcion para extraer datos de mysql y cargarlos en postgres
 def extract_mysql():
     try: 
+        test_connection(mysql_engine)
         with mysql_engine.connect() as connection:
             query = """SELECT table_name 
                     FROM information_schema.tables 
-                    where table_name IN ('product', 'productsubcategory', 'productcategory', 'salesterritory', 'productdescription');"""
+                    where table_name IN ('employees', 'dept_manager', 'dept_emp', 'salaries', 'titles');"""
             src_tables = pd.read_sql(query, connection)
             
             for table_name in src_tables["TABLE_NAME"]:
                 print(f"Extrayendo datos de: {table_name}")
-                df = pd.read_sql(f"SELECT * FROM adventureworks.{table_name};", connection)
+                df = pd.read_sql(f"SELECT * FROM employees.{table_name};", connection)
                 
                 load_in_postgres(df,table_name)
                 
     except Exception as e:
         print(f"Error al extraer la base de datos: {e}")
 
+# funcion para cargar los datos en postgres
 def load_in_postgres(df,tbl):
     try:
         rows_imported = 0
@@ -66,7 +66,8 @@ def load_in_postgres(df,tbl):
         
     except Exception as e:
         print("Data load error: " + str(e))
-        
+
+# main function       
 try:
     #call extract function
     extract_mysql()
